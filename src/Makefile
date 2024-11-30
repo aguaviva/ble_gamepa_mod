@@ -1,16 +1,25 @@
 PROJECT_NAME := ble_app_hids_keyboard_s110_pca10028
 
+NORDIC_SDK:=../../nordic_sdk
+COMPONENTS_DIR:=$(NORDIC_SDK)/components
+
+
+
 export OUTPUT_FILENAME
 #MAKEFILE_NAME := $(CURDIR)/$(word $(words $(MAKEFILE_LIST)),$(MAKEFILE_LIST))
 MAKEFILE_NAME := $(MAKEFILE_LIST)
 MAKEFILE_DIR := $(dir $(MAKEFILE_NAME) ) 
 
-TEMPLATE_PATH = ../../../../../../components/toolchain/gcc
+TEMPLATE_PATH = $(COMPONENTS_DIR)/toolchain/gcc
 ifeq ($(OS),Windows_NT)
 include $(TEMPLATE_PATH)/Makefile.windows
 else
 include $(TEMPLATE_PATH)/Makefile.posix
 endif
+
+GNU_INSTALL_ROOT:=$(NORDIC_SDK)/gcc-arm-none-eabi-4_9-2015q1
+#GNU_INSTALL_ROOT:=../../gcc-arm-none-eabi-10.3-2021.10
+
 
 MK := mkdir
 RM := rm -rf
@@ -31,79 +40,80 @@ NM              := '$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-nm'
 OBJDUMP         := '$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-objdump'
 OBJCOPY         := '$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-objcopy'
 SIZE            := '$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-size'
+GDB              := '$(GNU_PREFIX)-gdb' #'$(GNU_INSTALL_ROOT)/bin/$(GNU_PREFIX)-gdb'
 
 #function for removing duplicates in a list
 remduplicates = $(strip $(if $1,$(firstword $1) $(call remduplicates,$(filter-out $(firstword $1),$1))))
 
 #source common to all targets
 C_SOURCE_FILES += \
-$(abspath ../../../../../../components/libraries/button/app_button.c) \
-$(abspath ../../../../../../components/libraries/util/app_error.c) \
-$(abspath ../../../../../../components/libraries/fifo/app_fifo.c) \
-$(abspath ../../../../../../components/libraries/scheduler/app_scheduler.c) \
-$(abspath ../../../../../../components/libraries/timer/app_timer.c) \
-$(abspath ../../../../../../components/libraries/timer/app_timer_appsh.c) \
-$(abspath ../../../../../../components/libraries/trace/app_trace.c) \
-$(abspath ../../../../../../components/libraries/util/nrf_assert.c) \
-$(abspath ../../../../../../components/libraries/uart/retarget.c) \
-$(abspath ../../../../../../components/libraries/sensorsim/sensorsim.c) \
-$(abspath ../../../../../../components/libraries/uart/app_uart_fifo.c) \
-$(abspath ../../../../../../components/drivers_nrf/delay/nrf_delay.c) \
-$(abspath ../../../../../../components/drivers_nrf/common/nrf_drv_common.c) \
-$(abspath ../../../../../../components/drivers_nrf/hal/nrf_adc.c) \
-$(abspath ../../../../../../components/drivers_nrf/gpiote/nrf_drv_gpiote.c) \
-$(abspath ../../../../../../components/drivers_nrf/uart/nrf_drv_uart.c) \
-$(abspath ../../../../../../components/drivers_nrf/pstorage/pstorage.c) \
-$(abspath ../../../../../bsp/bsp.c) \
-$(abspath ../../../../../bsp/bsp_btn_ble.c) \
-$(abspath ../../../main.c) \
-$(abspath ../../../../../../components/ble/common/ble_advdata.c) \
-$(abspath ../../../../../../components/ble/ble_advertising/ble_advertising.c) \
-$(abspath ../../../../../../components/ble/ble_services/ble_bas/ble_bas.c) \
-$(abspath ../../../../../../components/ble/common/ble_conn_params.c) \
-$(abspath ../../../../../../components/ble/ble_services/ble_dis/ble_dis.c) \
-$(abspath ../../../../../../components/ble/ble_services/ble_hids/ble_hids.c) \
-$(abspath ../../../../../../components/ble/common/ble_srv_common.c) \
-$(abspath ../../../../../../components/ble/device_manager/device_manager_peripheral.c) \
-$(abspath ../../../../../../components/toolchain/system_nrf51.c) \
-$(abspath ../../../../../../components/softdevice/common/softdevice_handler/softdevice_handler.c) \
-$(abspath ../../../../../../components/softdevice/common/softdevice_handler/softdevice_handler_appsh.c) \
+$(abspath $(COMPONENTS_DIR)/libraries/button/app_button.c) \
+$(abspath $(COMPONENTS_DIR)/libraries/util/app_error.c) \
+$(abspath $(COMPONENTS_DIR)/libraries/fifo/app_fifo.c) \
+$(abspath $(COMPONENTS_DIR)/libraries/scheduler/app_scheduler.c) \
+$(abspath $(COMPONENTS_DIR)/libraries/timer/app_timer.c) \
+$(abspath $(COMPONENTS_DIR)/libraries/timer/app_timer_appsh.c) \
+$(abspath $(COMPONENTS_DIR)/libraries/trace/app_trace.c) \
+$(abspath $(COMPONENTS_DIR)/libraries/util/nrf_assert.c) \
+$(abspath $(COMPONENTS_DIR)/libraries/uart/retarget.c) \
+$(abspath $(COMPONENTS_DIR)/libraries/sensorsim/sensorsim.c) \
+$(abspath $(COMPONENTS_DIR)/libraries/uart/app_uart_fifo.c) \
+$(abspath $(COMPONENTS_DIR)/drivers_nrf/delay/nrf_delay.c) \
+$(abspath $(COMPONENTS_DIR)/drivers_nrf/common/nrf_drv_common.c) \
+$(abspath $(COMPONENTS_DIR)/drivers_nrf/hal/nrf_adc.c) \
+$(abspath $(COMPONENTS_DIR)/drivers_nrf/gpiote/nrf_drv_gpiote.c) \
+$(abspath $(COMPONENTS_DIR)/drivers_nrf/uart/nrf_drv_uart.c) \
+$(abspath $(COMPONENTS_DIR)/drivers_nrf/pstorage/pstorage.c) \
+$(abspath $(NORDIC_SDK)/examples/bsp/bsp.c) \
+$(abspath $(NORDIC_SDK)/examples/bsp/bsp_btn_ble.c) \
+$(abspath ./main.c) \
+$(abspath $(COMPONENTS_DIR)/ble/common/ble_advdata.c) \
+$(abspath $(COMPONENTS_DIR)/ble/ble_advertising/ble_advertising.c) \
+$(abspath $(COMPONENTS_DIR)/ble/ble_services/ble_bas/ble_bas.c) \
+$(abspath $(COMPONENTS_DIR)/ble/common/ble_conn_params.c) \
+$(abspath $(COMPONENTS_DIR)/ble/ble_services/ble_dis/ble_dis.c) \
+$(abspath $(COMPONENTS_DIR)/ble/ble_services/ble_hids/ble_hids.c) \
+$(abspath $(COMPONENTS_DIR)/ble/common/ble_srv_common.c) \
+$(abspath $(COMPONENTS_DIR)/ble/device_manager/device_manager_peripheral.c) \
+$(abspath $(COMPONENTS_DIR)/toolchain/system_nrf51.c) \
+$(abspath $(COMPONENTS_DIR)/softdevice/common/softdevice_handler/softdevice_handler.c) \
+$(abspath $(COMPONENTS_DIR)/softdevice/common/softdevice_handler/softdevice_handler_appsh.c) \
 
-#$(abspath ../../../../../../components/drivers_nrf/hal//nrf_adc.c) \
+#$(abspath $(COMPONENTS_DIR)/drivers_nrf/hal//nrf_adc.c) \
 
 #assembly files common to all targets
-ASM_SOURCE_FILES  = $(abspath ../../../../../../components/toolchain/gcc/gcc_startup_nrf51.s)
+ASM_SOURCE_FILES  = $(abspath $(COMPONENTS_DIR)/toolchain/gcc/gcc_startup_nrf51.s)
 
 #includes common to all targets
-INC_PATHS  = -I$(abspath ../../../config/ble_app_hids_keyboard_s110_pca10028)
-INC_PATHS += -I$(abspath ../../../config)
-INC_PATHS += -I$(abspath ../../../../../../components/libraries/scheduler)
-INC_PATHS += -I$(abspath ../../../../../../components/drivers_nrf/config)
-INC_PATHS += -I$(abspath ../../../../../bsp)
-INC_PATHS += -I$(abspath ../../../../../../components/libraries/fifo)
-INC_PATHS += -I$(abspath ../../../../../../components/ble/ble_services/ble_hids)
-INC_PATHS += -I$(abspath ../../../../../../components/drivers_nrf/delay)
-INC_PATHS += -I$(abspath ../../../../../../components/libraries/util)
-INC_PATHS += -I$(abspath ../../../../../../components/ble/device_manager)
-INC_PATHS += -I$(abspath ../../../../../../components/drivers_nrf/uart)
-INC_PATHS += -I$(abspath ../../../../../../components/ble/common)
-INC_PATHS += -I$(abspath ../../../../../../components/libraries/sensorsim)
-INC_PATHS += -I$(abspath ../../../../../../components/drivers_nrf/pstorage)
-INC_PATHS += -I$(abspath ../../../../../../components/ble/ble_services/ble_dis)
-INC_PATHS += -I$(abspath ../../../../../../components/device)
-INC_PATHS += -I$(abspath ../../../../../../components/libraries/uart)
-INC_PATHS += -I$(abspath ../../../../../../components/libraries/button)
-INC_PATHS += -I$(abspath ../../../../../../components/libraries/timer)
-INC_PATHS += -I$(abspath ../../../../../../components/softdevice/s110/headers)
-INC_PATHS += -I$(abspath ../../../../../../components/drivers_nrf/gpiote)
-INC_PATHS += -I$(abspath ../../../../../../components/drivers_nrf/hal)
-INC_PATHS += -I$(abspath ../../../../../../components/toolchain/gcc)
-INC_PATHS += -I$(abspath ../../../../../../components/toolchain)
-INC_PATHS += -I$(abspath ../../../../../../components/drivers_nrf/common)
-INC_PATHS += -I$(abspath ../../../../../../components/ble/ble_advertising)
-INC_PATHS += -I$(abspath ../../../../../../components/libraries/trace)
-INC_PATHS += -I$(abspath ../../../../../../components/ble/ble_services/ble_bas)
-INC_PATHS += -I$(abspath ../../../../../../components/softdevice/common/softdevice_handler)
+INC_PATHS  = -I$(abspath ./config/ble_app_hids_keyboard_s110_pca10028)
+INC_PATHS += -I$(abspath ./config)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/libraries/scheduler)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/drivers_nrf/config)
+INC_PATHS += -I$(abspath $(NORDIC_SDK)/examples/bsp)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/libraries/fifo)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/ble/ble_services/ble_hids)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/drivers_nrf/delay)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/libraries/util)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/ble/device_manager)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/drivers_nrf/uart)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/ble/common)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/libraries/sensorsim)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/drivers_nrf/pstorage)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/ble/ble_services/ble_dis)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/device)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/libraries/uart)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/libraries/button)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/libraries/timer)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/softdevice/s110/headers)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/drivers_nrf/gpiote)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/drivers_nrf/hal)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/toolchain/gcc)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/toolchain)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/drivers_nrf/common)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/ble/ble_advertising)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/libraries/trace)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/ble/ble_services/ble_bas)
+INC_PATHS += -I$(abspath $(COMPONENTS_DIR)/softdevice/common/softdevice_handler)
 
 OBJECT_DIRECTORY = _build
 LISTING_DIRECTORY = $(OBJECT_DIRECTORY)
@@ -179,7 +189,7 @@ vpath %.s $(ASM_PATHS)
 OBJECTS = $(C_OBJECTS) $(ASM_OBJECTS)
 
 nrf51422_xxab_s110: OUTPUT_FILENAME := nrf51422_xxab_s110
-nrf51422_xxab_s110: LINKER_SCRIPT=ble_app_hids_keyboard_gcc_nrf51.ld
+nrf51422_xxab_s110: LINKER_SCRIPT=config/ble_app_hids_keyboard_gcc_nrf51.ld
 nrf51422_xxab_s110: $(BUILD_DIRECTORIES) $(OBJECTS)
 	@echo Linking target: $(OUTPUT_FILENAME).out
 	$(NO_ECHO)$(CC) $(LDFLAGS) $(OBJECTS) $(LIBS) -o $(OUTPUT_BINARY_DIRECTORY)/$(OUTPUT_FILENAME).out
@@ -193,6 +203,7 @@ $(BUILD_DIRECTORIES):
 # Create objects from C SRC files
 $(OBJECT_DIRECTORY)/%.o: %.c
 	@echo Compiling file: $(notdir $<)
+	@echo $(CC)
 	$(NO_ECHO)$(CC) $(CFLAGS) $(INC_PATHS) -c -o $@ $<
 
 # Assemble files
@@ -239,13 +250,24 @@ clean:
 cleanobj:
 	$(RM) $(BUILD_DIRECTORIES)/*.o
 
-flash: $(MAKECMDGOALS)
-	@echo Flashing: $(OUTPUT_BINARY_DIRECTORY)/$<.hex
-	nrfjprog --program $(OUTPUT_BINARY_DIRECTORY)/$<.hex -f nrf51  --sectorerase
-	nrfjprog --reset
+flash:
+	@echo Flashing: $(OUTPUT_BINARY_DIRECTORY)/nrf51422_xxab_s110.hex
+	$(GDB) -batch \
+	-ex "tar ext /dev/ttyACM0" \
+	-ex "mon s" \
+	-ex "att 1" \
+	-ex "load $(OUTPUT_BINARY_DIRECTORY)/nrf51422_xxab_s110.hex" \
+	-ex continue \
+	-ex quit
 
 ## Flash softdevice
 flash_softdevice:
 	@echo Flashing: s110_nrf51_8.0.0_softdevice.hex
-	nrfjprog --program ../../../../../../components/softdevice/s110/hex/s110_nrf51_8.0.0_softdevice.hex -f nrf51 --chiperase
-	nrfjprog --reset
+	$(GDB) -batch \
+	-ex "tar ext /dev/ttyACM0" \
+	-ex "mon s" \
+	-ex "att 1" \
+	-ex "load $(COMPONENTS_DIR)/softdevice/s110/hex/s110_nrf51_8.0.0_softdevice.hex" \
+	-ex continue \
+	-ex quit
+

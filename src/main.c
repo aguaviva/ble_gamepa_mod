@@ -1353,7 +1353,7 @@ static void on_hids_evt(ble_hids_t * p_hids, ble_hids_evt_t *p_evt)
             service_context.service_type = DM_PROTOCOL_CNTXT_GATT_SRVR_ID;
             service_context.context_data.len = 0;
             service_context.context_data.p_data = NULL;
-
+      
             if (m_in_boot_mode)
             {
                 // Protocol mode is Boot Protocol mode.
@@ -1968,18 +1968,4 @@ int main(void)
         power_manage();
     }    
 }
-
-/*
-export PATH="/home/raul/repos/nrf51822/gcc-arm-none-eabi-10.3-2021.10/bin:$PATH" 
-
-
-arm-none-eabi-gdb  -batch \
-  -ex "tar ext 192.168.1.3:2022" \
-  -ex "mon s" \
-  -ex "att 1" \
-  -ex "file ../nrf51822/nordic_sdk/examples/ble_peripheral/ble_app_hids_keyboard/pca10028/s110/armgcc/_build/nrf51422_xxab_s110.out" \
-  -ex "load ../nrf51822/nordic_sdk/examples/ble_peripheral/ble_app_hids_keyboard/pca10028/s110/armgcc/_build/nrf51422_xxab_s110.hex" \
-  -ex continue 
-#\
-*/ 
 
