@@ -1,6 +1,6 @@
 PROJECT_NAME := ble_app_hids_keyboard_s110_pca10028
 
-NORDIC_SDK:=../../nordic_sdk
+NORDIC_SDK:=../../nRF51_SDK_10.0.0_dc26b5e
 COMPONENTS_DIR:=$(NORDIC_SDK)/components
 
 
@@ -17,8 +17,7 @@ else
 include $(TEMPLATE_PATH)/Makefile.posix
 endif
 
-GNU_INSTALL_ROOT:=$(NORDIC_SDK)/gcc-arm-none-eabi-4_9-2015q1
-#GNU_INSTALL_ROOT:=../../gcc-arm-none-eabi-10.3-2021.10
+GNU_INSTALL_ROOT:=../../gcc-arm-none-eabi-4_9-2015q1
 
 
 MK := mkdir
@@ -139,7 +138,7 @@ CFLAGS += -mfloat-abi=soft
 # keep every function in separate section. This will allow linker to dump unused functions
 CFLAGS += -ffunction-sections -fdata-sections -fno-strict-aliasing
 CFLAGS += -fno-builtin --short-enums
-#CFLAGS += -g
+CFLAGS += -g
 
 # keep every function in separate section. This will allow linker to dump unused functions
 LDFLAGS += -Xlinker -Map=$(LISTING_DIRECTORY)/$(OUTPUT_FILENAME).map
@@ -256,8 +255,7 @@ flash:
 	-ex "tar ext /dev/ttyACM0" \
 	-ex "mon s" \
 	-ex "att 1" \
-	-ex "load $(OUTPUT_BINARY_DIRECTORY)/nrf51422_xxab_s110.hex" \
-	-ex continue \
+	-ex run \
 	-ex quit
 
 ## Flash softdevice
@@ -268,6 +266,30 @@ flash_softdevice:
 	-ex "mon s" \
 	-ex "att 1" \
 	-ex "load $(COMPONENTS_DIR)/softdevice/s110/hex/s110_nrf51_8.0.0_softdevice.hex" \
-	-ex continue \
+	-ex run \
+	-ex quit
+
+flash_all:
+	@echo Flashing: s110_nrf51_8.0.0_softdevice.hex
+	$(GDB) -batch \
+	-ex "tar ext /dev/ttyACM0" \
+	-ex "mon s" \
+	-ex "att 1" \
+	-ex "mon erase_mass" \
+	-ex "load $(OUTPUT_BINARY_DIRECTORY)/nrf51422_xxab_s110.hex" \
+	-ex "load $(COMPONENTS_DIR)/softdevice/s110/hex/s110_nrf51_8.0.0_softdevice.hex" \
+	-ex run \
+	-ex quit
+
+
+
+debug:
+	@echo Flashing: s110_nrf51_8.0.0_softdevice.hex
+	$(GDB) -batch \
+	-ex "tar ext /dev/ttyACM0" \
+	-ex "mon s" \
+	-ex "att 1" \
+	-ex "file $(OUTPUT_BINARY_DIRECTORY)/s110_nrf51_8.0.0_softdevice.out" \
+	-ex run \
 	-ex quit
 
